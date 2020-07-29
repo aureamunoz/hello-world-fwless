@@ -1,6 +1,7 @@
 package org.acme;
 
 import com.sun.net.httpserver.HttpServer;
+import io.dekorate.openshift.annotation.OpenshiftApplication;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -10,6 +11,8 @@ import java.net.InetSocketAddress;
  * Hello world!
  *
  */
+
+@OpenshiftApplication(name = "hello-world-fwless")
 public class App 
 {
     public static void main(String[] args) throws IOException {
