@@ -17,7 +17,7 @@ mvn archetype:generate \
 
 ```
 
-2 - Add these properties to the `pom.xml`
+1 - Add these properties to the `pom.xml`
 ```
     <properties>
      <java.version>11</java.version>
@@ -26,7 +26,7 @@ mvn archetype:generate \
     </properties>
 ```
 
-3 - Include Jackson for JSON serialization
+1 - Include Jackson for JSON serialization
 ```
 <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
 <dependency>
@@ -36,7 +36,7 @@ mvn archetype:generate \
 </dependency>
 ```
 
-4 - Indicate the main class
+1 - Indicate the main class
 ``` 
     <build>
      <pluginManagement>
@@ -57,9 +57,11 @@ mvn archetype:generate \
     </build>
 ```
 
-6 - Build the application running the `mvn clean package` command.
-7 - Run the application with `java -jar target/hello-world-fwless-1.0-SNAPSHOT.jar`
-8 - Verify everything is working `curl localhost:8080/api/hello`.
+1 - Build the application running the `mvn clean package` command.
+
+1 - Run the application with `java -jar target/hello-world-fwless-1.0-SNAPSHOT.jar`.
+
+1 - Verify everything is working `curl localhost:8080/api/hello`.
 
 
 
