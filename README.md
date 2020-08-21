@@ -7,7 +7,7 @@ Please checkout each container platform from a separate branch.
 
 The following steps describe how to make a pure java API rest based on maven.
 
-1 - Create a Maven project with an initial `pom.xml` file
+1. Create a Maven project with an initial `pom.xml` file
 ```
 mvn archetype:generate \
   -DgroupId=org.acme \
@@ -16,8 +16,7 @@ mvn archetype:generate \
       -DinteractiveMode=false
 
 ```
-
-1 - Add these properties to the `pom.xml`
+1. Add these properties to the `pom.xml`
 ```
     <properties>
      <java.version>11</java.version>
@@ -25,8 +24,7 @@ mvn archetype:generate \
      <maven.compiler.target>${java.version}</maven.compiler.target>
     </properties>
 ```
-
-1 - Include Jackson for JSON serialization
+1. Include Jackson for JSON serialization
 ```
 <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
 <dependency>
@@ -35,8 +33,7 @@ mvn archetype:generate \
     <version>2.11.1</version>
 </dependency>
 ```
-
-1 - Indicate the main class
+1. Indicate the main class
 ``` 
     <build>
      <pluginManagement>
@@ -56,13 +53,11 @@ mvn archetype:generate \
     </pluginManagement>
     </build>
 ```
+1. Build the application running the `mvn clean package` command.
 
-1 - Build the application running the `mvn clean package` command.
+1. Run the application with `java -jar target/hello-world-fwless-1.0-SNAPSHOT.jar`.
 
-1 - Run the application with `java -jar target/hello-world-fwless-1.0-SNAPSHOT.jar`.
-
-1 - Verify everything is working `curl localhost:8080/api/hello`.
-
+1. Verify everything is working `curl localhost:8080/api/hello`.
 
 
 
