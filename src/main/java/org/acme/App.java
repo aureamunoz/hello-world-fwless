@@ -1,8 +1,6 @@
 package org.acme;
 
 import com.sun.net.httpserver.HttpServer;
-import io.dekorate.kubernetes.annotation.Port;
-import io.dekorate.openshift.annotation.OpenshiftApplication;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -13,7 +11,6 @@ import java.net.InetSocketAddress;
  *
  */
 
-@OpenshiftApplication(name = "hello-world-fwless", ports = @Port(name = "web", containerPort = 8080))
 public class App 
 {
     public static void main(String[] args) throws IOException {
