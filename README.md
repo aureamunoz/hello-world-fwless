@@ -16,7 +16,7 @@ mvn archetype:generate \
       -DinteractiveMode=false
 
 ```
-1. Add these properties to the `pom.xml`
+2. Add these properties to the `pom.xml`
 ```
     <properties>
      <java.version>11</java.version>
@@ -24,7 +24,7 @@ mvn archetype:generate \
      <maven.compiler.target>${java.version}</maven.compiler.target>
     </properties>
 ```
-1. Include Jackson for JSON serialization
+3. Include Jackson for JSON serialization
 ```
 <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
 <dependency>
@@ -33,7 +33,7 @@ mvn archetype:generate \
     <version>2.11.1</version>
 </dependency>
 ```
-1. Indicate the main class
+4. Indicate the main class
 ``` 
     <build>
      <pluginManagement>
@@ -53,7 +53,7 @@ mvn archetype:generate \
     </pluginManagement>
     </build>
 ```
-1. Build the application running the `mvn clean package` command.
+5. Build the application running the `mvn clean package` command.
 
 1. Run the application with `java -jar target/hello-world-fwless-1.0-SNAPSHOT.jar`.
 
