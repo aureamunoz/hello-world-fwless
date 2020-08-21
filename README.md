@@ -2,12 +2,12 @@
 Simple java API rest without framework
 
 
-How to use Dekorate to deploy the application on Openshift
+This branch aims to showcase how to use Dekorate to deploy this microservice on Openshift.
 
 We will use [dekorate](https://github.com/dekorateio/dekorate) to generate the manifests needed to deploy the application on Openshift.
 
 Generating this manifests is very easy, you just need add the proper dependency to the `pom.xml` and run
-`mvn clean package`. `
+`mvn clean package`.
 
 ```
  <dependency>
