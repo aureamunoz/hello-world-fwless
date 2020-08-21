@@ -1,77 +1,52 @@
 # hello-world-fwless
-Simple pure java API rest.
+Simple java API rest without framework
 
-This project aims to showcase how to use Dekorate to deploy an application, build without a framework, on Kubernetes/Openshift.
 
-Please checkout each container platform from a separate branch. 
+This branch aims to showcase how to use Dekorate to deploy this microservice on Openshift.
 
-The following steps describe how to make a pure java API rest based on maven.
+We will use [dekorate](https://github.com/dekorateio/dekorate) to generate the manifests needed to deploy the application on Openshift.
 
-1. Create a Maven project with an initial `pom.xml` file
-```
-mvn archetype:generate \
-  -DgroupId=org.acme \
-      -DartifactId=hello-world-fwless \
-      -DarchetypeArtifactId=maven-archetype-quickstart \
-      -DinteractiveMode=false
+Generating this manifests is very easy, you just need add the proper dependency to the `pom.xml` and run
+`mvn clean package`.
 
 ```
-2. Add these properties to the `pom.xml`
+ <dependency>
+      <groupId>io.dekorate</groupId>
+      <artifactId>kubernetes-annotations</artifactId>
+      <version>1.0.1</version>
+ </dependency>
 ```
-    <properties>
-     <java.version>11</java.version>
-     <maven.compiler.source>${java.version}</maven.compiler.source>
-     <maven.compiler.target>${java.version}</maven.compiler.target>
-    </properties>
+
+The generated manifests can be found under `target/classes/META-INF/dekorate.
+
+NOTE: To perform the following steps you need to be connected to a running OpenShift cluster via oc login`
+
+Run the following command to create the resources defined in the manifest
 ```
-3. Include Jackson for JSON serialization
+kubectl apply -f target/classes/META-INF/dekorate/kubernetes.yml
 ```
-<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
-<dependency>
-    <groupId>com.fasterxml.jackson.core</groupId>
-    <artifactId>jackson-databind</artifactId>
-    <version>2.11.1</version>
-</dependency>
+
+A build in OpenShift Container Platform is the process of transforming input parameters into a resulting object. Most often, builds are used to transform source code into a runnable container image. 
+To trigger the actual build run the following command:
 ```
-4. Indicate the main class
-``` 
-    <build>
-     <pluginManagement>
-     <plugins>
-       <plugin>
-         <artifactId>maven-jar-plugin</artifactId>
-         <version>3.2.0</version>
-         <configuration>
-           <archive>
-             <manifest>
-               <mainClass>org.acme.App</mainClass>
-             </manifest>
-           </archive>
-         </configuration>
-       </plugin>
-     </plugins>
-    </pluginManagement>
-    </build>
+oc start-build hello-world-fwless --from-dir=./target --follow
 ```
-5. Build the application running the `mvn clean package` command.
 
-1. Run the application with `java -jar target/hello-world-fwless-1.0-SNAPSHOT.jar`.
+At last, we need to expose the service in order to make it accessible from outside the cluster. For that, list the service using the command:
+```
+oc get services
+```
 
-1. Verify everything is working `curl localhost:8080/api/hello`.
+Copy the name of the service and expose it running:
 
-Deployment
+```
+oc expose service hello-world-fwless
+```
 
-# Build & run locally
-# docker build -f Dockerfile -t auri/hello-world-fwless .
-# docker run -i --rm -p 8080:8080 auri/hello-world-fwless
+Now, you should be able to get the route and access the application with a browser. To get the url, tape:
 
-# Build & push to Quay registry
-# docker build . -t quay.io/amunozhe/hello-world-fwless
-# docker login quay.io
-# docker push quay.io/amunozhe/hello-world-fwless:latest
-
-# Deploy the hello-world application manually
-# kubectl run hello-world --image=quay.io/amunozhe/hello-world-fwless:latest --port=8080
-
+```
+oc get routes
+```
 
 
