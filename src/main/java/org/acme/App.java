@@ -13,14 +13,14 @@ import java.net.InetSocketAddress;
  *
  */
 
-@OpenshiftApplication(name = "hello-world-fwless", ports = @Port(name = "web", containerPort = 8080))
+@OpenshiftApplication(name = "hello-world-fwless-openshift", ports = @Port(name = "web", containerPort = 8080))
 public class App 
 {
     public static void main(String[] args) throws IOException {
         int serverPort = 8080;
         HttpServer server = HttpServer.create(new InetSocketAddress(serverPort), 0);
         server.createContext("/api/hello", (exchange -> {
-            String respText = "Hello FrameWorkless world!";
+            String respText = "Hello from OpenShift FrameworkLess world!";
             exchange.sendResponseHeaders(200, respText.getBytes().length);
             OutputStream output = exchange.getResponseBody();
             output.write(respText.getBytes());
