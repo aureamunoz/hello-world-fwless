@@ -93,17 +93,17 @@ When we will run this class it will start web server at port 8000 and expose an 
 
 Deployment
 
-# Build & run locally
-# docker build -f Dockerfile -t auri/hello-world-fwless .
-# docker run -i --rm -p 8080:8080 auri/hello-world-fwless
+- Build & run locally
+- docker build -f Dockerfile -t auri/hello-world-fwless .
+- docker run -i --rm -p 8080:8080 auri/hello-world-fwless
 
-# Build & push to Quay registry
-# docker build . -t quay.io/amunozhe/hello-world-fwless
-# docker login quay.io
-# docker push quay.io/amunozhe/hello-world-fwless:latest
+- Build & push to Quay registry
+- docker build . -t quay.io/amunozhe/hello-world-fwless
+- docker login quay.io
+- docker push quay.io/amunozhe/hello-world-fwless:latest
 
-# Deploy the hello-world application manually
-# kubectl run hello-world --image=quay.io/amunozhe/hello-world-fwless:latest --port=8080
+- Deploy the hello-world application manually
+- kubectl run hello-world --image=quay.io/amunozhe/hello-world-fwless:latest --port=8080
 
 
 
