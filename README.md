@@ -53,7 +53,39 @@ mvn archetype:generate \
     </pluginManagement>
     </build>
 ```
-5. Build the application running the `mvn clean package` command.
+5. Edit the main `App` class and paste the code above. This code instantiate an `HttpServer` indicating a path and a port where we want the server listening. It builds also a response to send for the received requests.
+```
+package org.acme;
+
+import com.sun.net.httpserver.HttpServer;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.InetSocketAddress;
+
+public class App 
+{
+    public static void main(String[] args) throws IOException {
+        int serverPort = 8080;
+        HttpServer server = HttpServer.create(new InetSocketAddress(serverPort), 0);
+        server.createContext("/api/hello", (exchange -> {
+            String respText = "Hello FrameWorkless world!";
+            exchange.sendResponseHeaders(200, respText.getBytes().length);
+            OutputStream output = exchange.getResponseBody();
+            output.write(respText.getBytes());
+            output.flush();
+            exchange.close();
+        }));
+        server.setExecutor(null); // creates a default executor
+        System.out.println("Listening in port "+serverPort);
+        server.start();
+    }
+
+}
+```
+When we will run this class it will start web server at port 8000 and expose an endpoint which is just printing Hello FrameWorkless world!!
+
+6. Build the application running the `mvn clean package` command.
 
 1. Run the application with `java -jar target/hello-world-fwless-1.0-SNAPSHOT.jar`.
 
