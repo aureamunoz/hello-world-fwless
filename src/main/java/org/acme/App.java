@@ -4,6 +4,7 @@ import com.sun.net.httpserver.HttpServer;
 import io.dekorate.kubernetes.annotation.ImagePullPolicy;
 import io.dekorate.kubernetes.annotation.KubernetesApplication;
 import io.dekorate.kubernetes.annotation.Port;
+import io.dekorate.kubernetes.annotation.ServiceType;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -14,7 +15,7 @@ import java.net.InetSocketAddress;
  *
  */
 
-@KubernetesApplication(name = "hello-world-fwless-k8s", ports = @Port(name = "web", containerPort = 8080), imagePullPolicy = ImagePullPolicy.Never)
+@KubernetesApplication(name = "hello-world-fwless-k8s", ports = @Port(name = "web", containerPort = 8080), serviceType = ServiceType.NodePort)
 public class App
 {
     public static void main(String[] args) throws IOException {
