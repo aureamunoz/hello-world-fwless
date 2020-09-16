@@ -1,12 +1,76 @@
 # hello-world-fwless
-Simple java API rest without framework
+Simple java API rest without framework.
 
+This branch aims to showcase how to use [Dekorate](https://github.com/dekorateio/dekorate) to deploy this microservice on a Kubernetes cluster.
 
-This branch aims to showcase how to use Dekorate to deploy this microservice on Openshift.
+## Set up
+This project uses [kind](https://kind.sigs.k8s.io/) for running a Kubernetes cluster locally. You can install it following the instructions [here](https://kind.sigs.k8s.io/docs/user/quick-start/#installation).
+Once installed, we need to set it up in order to use a local docker registry and install the ingress controller to make Ingress resources work. So follow the next steps:
 
-We will use [dekorate](https://github.com/dekorateio/dekorate) to generate the manifests needed to deploy the application on Openshift.
+1.  Create a `kind` cluster with a local registry using the following bash script
+```
+#!/bin/sh
+set -o errexit
 
-Generating this manifests is very easy, you just need add the proper dependency to the `pom.xml`.
+# create registry container unless it already exists
+reg_name='kind-registry'
+reg_port='5000'
+running="$(docker inspect -f '{{.State.Running}}' "${reg_name}" 2>/dev/null || true)"
+if [ "${running}" != 'true' ]; then
+  docker run \
+    -d --restart=always -p "${reg_port}:5000" --name "${reg_name}" \
+    registry:2
+fi
+
+# create a cluster with the local registry enabled in containerd
+cat <<EOF | kind create cluster --config=-
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+- role: control-plane
+  kubeadmConfigPatches:
+  - |
+    kind: InitConfiguration
+    nodeRegistration:
+      kubeletExtraArgs:
+        node-labels: "ingress-ready=true"
+  extraPortMappings:
+  - containerPort: 80
+    hostPort: 80
+    protocol: TCP
+  - containerPort: 443
+    hostPort: 443
+    protocol: TCP
+containerdConfigPatches:
+- |-
+  [plugins."io.containerd.grpc.v1.cri".registry.mirrors."localhost:${reg_port}"]
+    endpoint = ["http://${reg_name}:${reg_port}"]
+EOF
+
+# connect the registry to the cluster network
+docker network connect "kind" "${reg_name}"
+
+# tell https://tilt.dev to use the registry
+# https://docs.tilt.dev/choosing_clusters.html#discovering-the-registry
+for node in $(kind get nodes); do
+  kubectl annotate node "${node}" "kind.x-k8s.io/registry=localhost:${reg_port}";
+done
+```
+
+2. Install the Ingress controller in the cluster.
+
+You can deploy the [NGINX Ingress Controller](https://github.com/kubernetes/ingress-nginx) running the following command:
+```
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/static/provider/kind/deploy.yaml
+```
+
+The environment is now ready to deploy our application using `Dekorate`.
+
+Let's begin!
+
+# K8s manifests generation and deploy
+## Manifests generation
+Generating these manifests using `Dekorate` is very easy, you just need add the proper dependency to the `pom.xml`.
 
 ```
  <dependency>
@@ -16,45 +80,58 @@ Generating this manifests is very easy, you just need add the proper dependency 
  </dependency>
 ```
 
-We also need to add an annotation to enable dekorate. In this case we will use `@KubernetesApplication` which also gives us access to more Kubernetes specific configuration options.
-Edit the App class and add the indicated annotation.
+We need to enable `Dekorate` by adding an annotation. In this case we will use `@KubernetesApplication` which also gives us access to more Kubernetes specific configuration options.
+Edit the App class and add the following annotation.
 
 ```
-@KubernetesApplication(name = "hello-world-fwless-k8s", ports = @Port(name = "web", containerPort = 8080))
+@KubernetesApplication(
+        name = "hello-world-fwless-k8s",        
+        ports = @Port(name = "web", containerPort = 8080), //1
+        host = "fw-app.127.0.0.1.nip.io", //2
+        expose = true, //3
+        imagePullPolicy = ImagePullPolicy.Always //4
+)
 ```
-We need to specify a port in order to prevent dekorate it is about a Web Application, this way a service will be generated in the k8s manifest.
-
-NOTE: if you are using minikube a trick that often works is to use a service of type NodePort.
+<1> We need to specify a port in order to prevent dekorate it is about a Web Application, this way a service will be generated in the k8s manifest.
+<2> The host under which the application is going to be exposed.
+<3> Controls whether the application should be exposed via Ingress.
+<4> We use `Always` in order to be able to use an updated image.
 
 Generate the manifests launching a project compilation. Navigate to the directory and run `mvn clean package`. The generated manifests can be found under `target/classes/META-INF/dekorate.
 
-NOTE: To perform the following steps you need to be connected to a running kubernetes cluster.
+## Build and push the docker image
+We need to somehow build and push the (docker) image to the registry.
 
-Run the following command to create the resources defined in the manifest.
+A basic Dockerfile is provided in the project base directory so you can build the image using the following command:
 ```
-kubectl apply -f target/classes/META-INF/dekorate/kubernetes.yml
+docker build -f Dockerfile -t USERNAME/hello-world-fwless:1.0-SNAPSHOT .
 ```
-
-At last, we need to expose the service in order to make it accessible from outside the cluster. For that, list the service using the command:
+Then, tag the image as follows to be able to push it to the local registry:
 ```
-oc get services
+docker tag USERNAME/hello-world-fwless:1.0-SNAPSHOT localhost:5000/hello-world-fwless:1.0-SNAPSHOT
 ```
-
-Copy the name of the service and expose it running:
-
+Finally, you can push the image to the registry
 ```
-oc expose service hello-world-fwless
+docker push localhost:5000/hello-world-fwless:1.0-SNAPSHOT
 ```
 
-Now, you should be able to get the address of the service and access the application with a browser. To get the adress, tape:
+## Deployment
+
+As we have pushed the image to the local registry, we need to modify manually the kubernetes yml file generated to use that image.
+So, replace the following line: 
+```
+image: amunozhe/hello-world-fwless:1.0-SNAPSHOT
+```
+by
+```
+image: localhost:5000/hello-world-fwless:1.0-SNAPSHOT
+```
+
+Next, launch the deploy on the cluster:
 
 ```
-kubectl get services
+kubectl create ns demo
+kubectl apply -f target/classes/META-INF/dekorate/kubernetes.yml -n demo
 ```
 
-Open a browser to x.x.x.x:y.y/api/hello
-
-Deployment
-
-
-
+Check the application by opening a browser to http://fw-app.127.0.0.1.nip.io/api/hello
