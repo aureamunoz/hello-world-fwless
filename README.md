@@ -74,7 +74,7 @@ Let's begin!
 
 # K8s manifests generation and deploy
 ## Manifests generation
-Generating these manifests using `Dekorate` is very easy, you just need to add the proper dependency to the `pom.xml`.
+Generating these manifests (YAML files) using `Dekorate` is very easy, you just need to add the proper dependency to the `pom.xml`.
 
 ```
  <dependency>
@@ -84,7 +84,7 @@ Generating these manifests using `Dekorate` is very easy, you just need to add t
  </dependency>
 ```
 
-Next, we will add a Java annotation for `Dekorate` to tune the generated manifest. It's possible [to configure Dekorate using](https://github.com/dekorateio/dekorate#usage) Java annotations, configuration properties (application.properties), both.
+Next, we will add a Java annotation for `Dekorate` to tune the YAML resources. It's possible [to configure Dekorate using](https://github.com/dekorateio/dekorate#usage) Java annotations, configuration properties (application.properties), both.
 In this case we will use, Java annotations, more specificlly  [`@KubernetesApplication`](https://github.com/dekorateio/dekorate#kubernetes) which also gives us access to more Kubernetes specific configuration options.
 Edit the App class and add the following annotation.
 
