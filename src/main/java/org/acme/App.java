@@ -1,6 +1,7 @@
 package org.acme;
 
 import com.sun.net.httpserver.HttpServer;
+import io.dekorate.kubernetes.annotation.Container;
 import io.dekorate.kubernetes.annotation.ImagePullPolicy;
 import io.dekorate.kubernetes.annotation.KubernetesApplication;
 import io.dekorate.kubernetes.annotation.Port;
@@ -15,7 +16,13 @@ import java.net.InetSocketAddress;
  *
  */
 
-@KubernetesApplication(name = "hello-world-fwless-k8s", ports = @Port(name = "web", containerPort = 8080), serviceType = ServiceType.NodePort)
+@KubernetesApplication(
+        name = "hello-world-fwless-k8s",
+        ports = @Port(name = "web", containerPort = 8080),
+        host = "fw-app.127.0.0.1.nip.io",
+        expose = true, // NEEDED FOR INGRESS
+        imagePullPolicy = ImagePullPolicy.Always // TO BE ABLE TO USE UPDATED IMAGE ;-)
+)
 public class App
 {
     public static void main(String[] args) throws IOException {
