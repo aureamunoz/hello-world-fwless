@@ -1,8 +1,11 @@
 package org.acme;
 
 import com.sun.net.httpserver.HttpServer;
+import io.dekorate.docker.annotation.DockerBuild;
+import io.dekorate.kubernetes.annotation.ImagePullPolicy;
 import io.dekorate.kubernetes.annotation.Port;
 import io.dekorate.openshift.annotation.OpenshiftApplication;
+import io.dekorate.s2i.annotation.S2iBuild;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -13,7 +16,9 @@ import java.net.InetSocketAddress;
  *
  */
 
-@OpenshiftApplication(name = "hello-world-fwless-openshift", ports = @Port(name = "web", containerPort = 8080))
+@OpenshiftApplication(name = "hello-world-fwless-openshift",  expose = true, imagePullPolicy = ImagePullPolicy.Always, ports = @Port(name = "web", containerPort = 8080))
+@S2iBuild(enabled=false)
+@DockerBuild(registry = "docker.io", image = "docker.io/aureamunoz/hello-world-fwless-openshift:1.0-SNAPSHOT")
 public class App 
 {
     public static void main(String[] args) throws IOException {

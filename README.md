@@ -1,12 +1,12 @@
 # hello-world-fwless
-Simple java API rest without framework
+Simple java rest API without framework
 
 
-This branch aims to showcase how to use Dekorate to deploy this microservice on Openshift.
+This branch aims to showcase how to use [Dekorate](https://github.com/dekorateio/dekorate) to generate the YAML resources and next deploy this microservice on a kubernetes cluster.
 
-We will use [dekorate](https://github.com/dekorateio/dekorate) to generate the manifests needed to deploy the application on Openshift.
-
-Generating this manifests is very easy, you just need add the proper dependency to the `pom.xml`.
+# OpenShift resources generation and deploy
+## Manifests generation
+Generating these manifests (YAML files) using `Dekorate` is very easy, you just need to add the proper dependency to the `pom.xml`.
 
 ```
  <dependency>
@@ -16,20 +16,33 @@ Generating this manifests is very easy, you just need add the proper dependency 
  </dependency>
 ```
 
-We also need to add an annotation to enable dekorate. In this case we will use `@KubernetesApplication` which also gives us access to more Kubernetes specific configuration options.
-Edit the App class and add the indicated annotation.
+Next, we will add a Java annotation for `Dekorate` to tune the YAML resources. It's possible [to configure Dekorate using](https://github.com/dekorateio/dekorate#usage) Java annotations, configuration properties (application.properties), both.
+In this case we will use, Java annotations, more specificlly  `@OpenshiftApplication` which also gives us access to more OpenShift specific configuration options.
+Edit the App class and add the following annotation.
 
 ```
-@OpenshiftApplication(name = "hello-world-fwless-openshift", ports = @Port(name = "web", containerPort = 8080))
+@OpenshiftApplication(
+        name = "hello-world-fwless-openshift",        
+        ports = @Port(name = "web", containerPort = 8080),  
+        expose = true, 
+        imagePullPolicy = ImagePullPolicy.Always 
+)
 ```
-We need to specify a port in order to prevent dekorate it is about a Web Application, this way a service will be generated in the k8s manifest.
+- We need to prevent Dekorate that a Service should be created. A OpenShift Service is a resource providing a single, constant point of entry to our application. It has an IP address and port that never change while the service exists. Dekorate will generate a OpenShift Service in the manifest if a **`@Port`** is defined.
+- **`expose = true`** controls whether the application should be exposed via a `Route` resource accessible from the outside the cluster.
+- We use **`Always`** in order to be able to use an updated image.
 
-Generate the manifests launching a project compilation. Navigate to the directory and run `mvn clean package`. The generated manifests can be found under `target/classes/META-INF/dekorate.
+Trigger the manifests generation. Navigate to the directory and run `mvn clean package`. The generated manifests can be found under `target/classes/META-INF/dekorate`.
 
-NOTE: To perform the following steps you need to be connected to a running OpenShift cluster via oc login`
+**NOTE**: To perform the following steps you need to be connected to a running OpenShift cluster via oc login`
 
-Run the following command to create the resources defined in the manifest
+## Building and deploying
+
+Now that we have populated YAML OpenShift resources, we are able to deploy these resources.
+
+We will deploy the application under the namespace `demo` using the yaml resources with the following command:
 ```
+oc new-project demo
 oc apply -f target/classes/META-INF/dekorate/openshift.yml
 ```
 
