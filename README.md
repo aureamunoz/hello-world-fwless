@@ -56,4 +56,6 @@ Now, you should be able to get the route and access the application with a brows
 oc get routes
 ```
 
+mvn clean install -Ddekorate.build=true -Ddekorate.push=true
+
 
