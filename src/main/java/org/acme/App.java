@@ -18,7 +18,7 @@ import java.net.InetSocketAddress;
 
 @OpenshiftApplication(name = "hello-world-fwless-openshift",  expose = true, imagePullPolicy = ImagePullPolicy.Always, ports = @Port(name = "web", containerPort = 8080))
 @S2iBuild(enabled=false)
-@DockerBuild(registry = "docker.io", image = "docker.io/aureamunoz/hello-world-fwless-openshift:1.0-SNAPSHOT")
+@DockerBuild(registry = "docker.io")
 public class App 
 {
     public static void main(String[] args) throws IOException {
