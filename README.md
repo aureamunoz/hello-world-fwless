@@ -88,7 +88,7 @@ public class App
 }
 ```
 When you will launch using your IDEA the `App` java class, a web server listening on port 8000 will be started and will expose
-an endpoint. If you issue a curl request at the address `localhost:8080/api/hello`, then the following messqge `Hello FrameWorkless world!`
+an endpoint. If you issue a curl request at the address `localhost:8080/api/hello`, then the following message `Hello FrameWorkless world!`
 will be printed.
 
 6. Compile the application using the `mvn clean package` command.
