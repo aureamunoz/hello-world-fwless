@@ -73,7 +73,7 @@ oc new-project demo
 oc apply -f target/classes/META-INF/dekorate/openshift.yml
 ```
 
-Finally, get the url to access the application:
+Finally, get the url to access the application using the following command:
 
 ```
 oc get route
