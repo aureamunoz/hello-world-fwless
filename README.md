@@ -1,11 +1,13 @@
 # hello-world-fwless
+
 Simple pure java API rest.
 
-This project aims to showcase how to use Dekorate to deploy an application, build without a framework, on Kubernetes/Openshift.
+This project aims to showcase how to use [Dekorate](dekorate.io) to generate the Kubernetes MANIFEST (YAML resources) 
+to build a container image of an application designed without a framework but based on Java classes only and 
+deploy it easily next Kubernetes/Openshift.
 
-Please checkout each container platform from a separate branch. 
-
-The following steps describe how to make a pure java API rest based on maven.
+The following steps describe how to create a maven project, configure it and add the needed maven dependency to develop
+a pure java API rest.
 
 1. Create a Maven project with an initial `pom.xml` file
 ```
@@ -33,7 +35,7 @@ mvn archetype:generate \
     <version>2.11.1</version>
 </dependency>
 ```
-4. Indicate the main class
+4. Specify the `main class` used as entry point within the Java JAR archive to launch the application
 ``` 
     <build>
      <pluginManagement>
@@ -53,7 +55,9 @@ mvn archetype:generate \
     </pluginManagement>
     </build>
 ```
-5. Edit the main `App` class and paste the code above. This code instantiate an `HttpServer` indicating a path and a port where we want the server listening. It builds also a response to send for the received requests.
+5. Edit the main `App` java class and paste the code above. This code instantiates a `HttpServer` and will run it at the specified. 
+   The endpoint or URI path to call the service is define using a `HttpContext` object. The response to be populated when a HTTP request
+   is receive is managed with an `OutputStream` and `HttpExchange`.
 ```
 package org.acme;
 
@@ -77,21 +81,25 @@ public class App
             exchange.close();
         }));
         server.setExecutor(null); // creates a default executor
-        System.out.println("Listening in port "+serverPort);
+        System.out.println("Listening on port "+serverPort);
         server.start();
     }
 
 }
 ```
-When we will run this class it will start web server at port 8000 and expose an endpoint which is just printing Hello FrameWorkless world!!
+When you will launch using your IDEA the `App` java class, a web server listening on port 8000 will be started and will expose
+an endpoint. If you issue a curl request at the address `localhost:8080/api/hello`, then the following messqge `Hello FrameWorkless world!`
+will be printed.
 
-6. Build the application running the `mvn clean package` command.
+6. Compile the application using the `mvn clean package` command.
 
-1. Run the application with `java -jar target/hello-world-fwless-1.0-SNAPSHOT.jar`.
+7. Launch the application within a terminal by executing this command: `java -jar target/hello-world-fwless-1.0-SNAPSHOT.jar`.
 
-1. Verify everything is working `curl localhost:8080/api/hello`.
+8. Verify if the endpoint is able to reply to a `curl localhost:8080/api/hello` request.
 
 Deployment
+
+TODO: Review this part Auri to better explain what you will do :-)
 
 - Build & run locally
 - docker build -f Dockerfile -t auri/hello-world-fwless .

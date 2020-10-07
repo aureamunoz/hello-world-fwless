@@ -20,7 +20,7 @@ public class App
             exchange.close();
         }));
         server.setExecutor(null); // creates a default executor
-        System.out.println("Listening in port "+serverPort);
+        System.out.println("Listening on port "+serverPort);
         server.start();
     }
 
