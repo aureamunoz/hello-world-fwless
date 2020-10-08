@@ -1,6 +1,6 @@
 # hello-world-fwless
 
-Simple pure java API rest.
+Simple java API rest.
 
 This project aims to showcase how to use [Dekorate](dekorate.io) to generate the Kubernetes MANIFEST (YAML resources) 
 to build a container image of an application designed without a framework but based on Java classes only and 
@@ -112,5 +112,4 @@ Then, run the image using this command:
 ```
 docker run -i --rm -p 8080:8080 $USER/hello-world-fwless
 ```
-
 Check if the endpoint is responding with `curl localhost:8080/api/hello` or open a browser to `http://localhost:8080/api/hello`.
