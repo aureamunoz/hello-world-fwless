@@ -52,10 +52,10 @@ So, edit the `pom.xml` file and add the following dependency to :
 
 To customize what Dekorate should do during the build step, we will then perform some modifications as described hereafter.
 
-1. To bypass the generation of the Openshift `Build` and `BuildConfig` resources used by Openshift to perform a container build on the cluster, we will then add a new Java annotation - `` and change the parameter `enabled=false`,
+1. To bypass the generation of the Openshift `Build` and `BuildConfig` resources used by Openshift to perform a container build on the cluster, we will then add a new Java annotation - `@S2iBuild` and change the parameter `enabled=false`,
 2. To tell to JIB to push the image build locally to the `docker.io` registry, the following  JIB annotation must be then added: `@JibBuild(registry = "docker.io")`
 
-**NOTE**: you need to have an account on the image registry to be able to push the image.
+**NOTE**: you need to have an account on the image registry and be logged with `docker login` to be able to push the image.
 
 Edit the Java `App` class and add these annotations:
 
