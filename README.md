@@ -1,14 +1,18 @@
 # hello-world-fwless
 Simple java API rest without framework
 
+This branch aims to showcase :
+- How to Use [Dekorate](https://github.com/dekorateio/dekorate) to generate the MANIFESTS,
+- To build using JIB the container image,
+- To deploy this microservice on an OpenShift cluster.
 
-This branch aims to showcase how to use [Dekorate](https://github.com/dekorateio/dekorate) to generate the YAML resources and next deploy this microservice on a kubernetes cluster.
-
-# OpenShift resources generation and deploy
+# OpenShift resources generation and deployment
 ## Manifests generation
-Generating these manifests (YAML files) using `Dekorate` is very easy, you just need to add the proper dependency to the `pom.xml`.
 
-```
+Generating the MANIFESTS (Openshift YAML files) using `Dekorate` is very easy as 
+you just need to add the proper dependency to the `pom.xml` .
+
+```xml
  <dependency>
       <groupId>io.dekorate</groupId>
       <artifactId>openshift-annotations</artifactId>
@@ -16,11 +20,12 @@ Generating these manifests (YAML files) using `Dekorate` is very easy, you just 
  </dependency>
 ```
 
-Next, we will add a Java annotation for `Dekorate` to tune the YAML resources. It's possible [to configure Dekorate using](https://github.com/dekorateio/dekorate#usage) Java annotations, configuration properties (application.properties), both.
-In this case we will use, Java annotations, more specificlly  `@OpenshiftApplication` which also gives us access to more OpenShift specific configuration options.
-Edit the App class and add the following annotation.
+Next, you will add this Java annotation `@OpenshiftApplication` for `Dekorate` to generate the OpenShift YAML resources
+but also to tune the configuration.
 
-```
+So, edit the Java `App class` and add the following annotation.
+
+```java
 @OpenshiftApplication(
         name = "hello-world-fwless-openshift",        
         ports = @Port(name = "web", containerPort = 8080),  
@@ -28,59 +33,72 @@ Edit the App class and add the following annotation.
         imagePullPolicy = ImagePullPolicy.Always 
 )
 ```
-- We need to prevent Dekorate that a Service should be created. An OpenShift Service is a resource providing a single, constant point of entry to our application. It has an IP address and port that never change while the service exists. Dekorate will generate an OpenShift Service in the manifest if a **`@Port`** is defined.
-- **`expose = true`** controls whether the application should be exposed via a `Route` resource accessible from the outside the cluster.
-- We use **`Always`** in order to be able to use an updated image.
+- To tell to Dekorate that a Kubernetes `Service` should be created, then we configure the **`@Port`** parameter to specify the name of the service to be used and port.
+- **`expose = true`** controls whether the application should be accessible outside of the cluster and that an Openshift `Route` resource is create.
+- The parameter **`Always`** of the parameter `ImagePullPolicy` allows deploying or redeploying applications with images updated within the container registry.
 
 ## Building the image
-We are going to trigger the image build with jib. In order to use `jib` we need to add the `jib-annotations` dependency. Do edit the `pom.xml` file and add the following dependency:
 
-```
+To build the container image on the laptop of the developer, we will use the [`jib`](https://github.com/GoogleContainerTools/jib) tool combined with Dekorate.
+
+So, edit the `pom.xml` file and add the following dependency to :
+
+```xml
     <dependency>
       <groupId>io.dekorate</groupId>
       <artifactId>jib-annotations</artifactId>
     </dependency>
 ```
 
-Now we need to add two more annotations to the App class. One to disable s2i resources, since we are not using S2I approach for building the container image. 
-Generally, docker builds are not allowed in OpenShift, so if we want to use jib, we need to perform the image build locally and then push the image to the registry from where OpenShift will pick it up. 
-So that is what the `@JibBuild` annotation does, it tells Dekorate which is the image registry we are going to use, in this case we will use `docker.io`.
+To customize what Dekorate should do during the build step, we will then perform some modifications as described hereafter.
+
+1. To bypass the generation of the Openshift `Build` and `BuildConfig` resources used by Openshift to perform a container build on the cluster, we will then add a new Java annotation - `` and change the parameter `enabled=false`,
+2. To tell to JIB to push the image build locally to the `docker.io` registry, the following  JIB annotation must be then added: `@JibBuild(registry = "docker.io")`
 
 **NOTE**: you need to have an account on the image registry to be able to push the image.
 
-Edit the App.java and add these annotations:
+Edit the Java `App` class and add these annotations:
 
-```
+```java
 @S2iBuild(enabled=false)
 @JibBuild(registry = "docker.io")
 ```
 
-At this point, we are set! We can now trigger the manifests generation. Navigate to the directory and run `mvn clean package`. To trigger the image build and push it to the registry accessible from Openshift we can pass `-Ddekorate.build=true -Ddekorate.push=true`. The generated manifests can be found under `target/classes/META-INF/dekorate`.
+At this point we are set, and we can now trigger the generation of manifests !
+
+Within a terminal, navigate to the directory of this project and execute the following maven command.
+To trigger the build of the image and to push it to the registry, we will then pass the following parameters `-Ddekorate.build=true -Ddekorate.push=true` to the command:
+
+```
+mvn clean package -Ddekorate.build=true -Ddekorate.push=true
+```
+
+**REMARK**: The generated manifests can be found under the following path: `target/classes/META-INF/dekorate`.
 
 **NOTE**: we don't need to write a dockerfile. We don't even have to have docker installed to create and publish the docker images. Jib does it for us.
 
+## Deploying theApplication on the cluster
 
-## Deploying
+**NOTE**: To perform the following steps you need to be connected to a running OpenShift cluster via the command `oc login`
 
-**NOTE**: To perform the following steps you need to be connected to a running OpenShift cluster via oc login`
-
-Now that we have populated YAML OpenShift resources, we are able to deploy these resources.
-
-We will deploy the application under the namespace `demo` using the yaml resources with the following command:
-
-```
+To deploy the application, we will first create a new project or namespace: 
+```bash
 oc new-project demo
+```
+
+Next, the application will be deployed using the following command:
+```bash
 oc apply -f target/classes/META-INF/dekorate/openshift.yml
 ```
 
-Finally, get the url to access the application using the following command:
+Finally, in order to access the service exposed, get the url of the route using the following command:
 
 ```
 oc get route
 ```
 
-Open a browser to the url and the path of the application:  $URL/api/hello
-You should have the following message:
+Open a browser to the url and the path of the application: `$URL/api/hello`
+You should see the following message:
 
 `Hello from OpenShift FrameworkLess world!`
 
