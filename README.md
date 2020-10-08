@@ -97,21 +97,20 @@ will be printed.
 
 8. Verify if the endpoint is able to reply to a `curl localhost:8080/api/hello` request.
 
-Deployment
+## Containerization
 
-TODO: Review this part Auri to better explain what you will do :-)
+A Dockerfile is provided in order to build a container that runs the application.
 
-- Build & run locally
-- docker build -f Dockerfile -t auri/hello-world-fwless .
-- docker run -i --rm -p 8080:8080 auri/hello-world-fwless
+If you have docker installed in your machine, within a terminal you can build the image with:
 
-- Build & push to Quay registry
-- docker build . -t quay.io/amunozhe/hello-world-fwless
-- docker login quay.io
-- docker push quay.io/amunozhe/hello-world-fwless:latest
+```
+docker build -f Dockerfile -t $USER/hello-world-fwless .
+```
 
-- Deploy the hello-world application manually
-- kubectl run hello-world --image=quay.io/amunozhe/hello-world-fwless:latest --port=8080
+Then, run the image using this command:
 
+```
+docker run -i --rm -p 8080:8080 $USER/hello-world-fwless
+```
 
-
+Check if the endpoint is responding with `curl localhost:8080/api/hello` or open a browser to `http://localhost:8080/api/hello`.
