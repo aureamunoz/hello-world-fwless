@@ -3,7 +3,7 @@ Simple java API rest without framework
 
 This branch aims to showcase :
 - How to Use [Dekorate](https://github.com/dekorateio/dekorate) to generate the MANIFESTS,
-- To build using JIB the container image,
+- To build using docker the container image,
 - To deploy this microservice on an OpenShift cluster.
 
 # OpenShift resources generation and deployment
@@ -39,21 +39,21 @@ So, edit the Java `App class` and add the following annotation.
 
 ## Building the image
 
-To build the container image on the laptop of the developer, we will use the [`jib`](https://github.com/GoogleContainerTools/jib) tool combined with Dekorate.
+To build the container image on the laptop of the developer, we will use the docker tool combined with Dekorate.
 
 So, edit the `pom.xml` file and add the following dependency to :
 
 ```xml
     <dependency>
       <groupId>io.dekorate</groupId>
-      <artifactId>jib-annotations</artifactId>
+      <artifactId>docker-annotations</artifactId>
     </dependency>
 ```
 
 To customize what Dekorate should do during the build step, we will then perform some modifications as described hereafter.
 
 1. To bypass the generation of the Openshift `Build` and `BuildConfig` resources used by Openshift to perform a container build on the cluster, we will then add a new Java annotation - `@S2iBuild` and change the parameter `enabled=false`,
-2. To tell to JIB to push the image build locally to the `docker.io` registry, the following  JIB annotation must be then added: `@JibBuild(registry = "docker.io")`
+2. To tell to JIB to push the image build locally to the `docker.io` registry, the following  JIB annotation must be then added: `@DockerBuild(registry = "docker.io")`
 
 **NOTE**: you need to have an account on the image registry and be logged with `docker login` to be able to push the image.
 
@@ -61,7 +61,7 @@ Edit the Java `App` class and add these annotations:
 
 ```java
 @S2iBuild(enabled=false)
-@JibBuild(registry = "docker.io")
+@DockerBuild(registry = "docker.io")
 ```
 
 At this point we are set, and we can now trigger the generation of manifests !
@@ -75,7 +75,7 @@ mvn clean package -Ddekorate.build=true -Ddekorate.push=true
 
 **REMARK**: The generated manifests can be found under the following path: `target/classes/META-INF/dekorate`.
 
-**NOTE**: we don't need to write a dockerfile. We don't even have to have docker installed to create and publish the docker images. Jib does it for us.
+**NOTE**: we need a dockerfile to build a container that runs the application. Such file is provided at the project directory. Also, docker must be installed in your machine.
 
 ## Deploying theApplication on the cluster
 

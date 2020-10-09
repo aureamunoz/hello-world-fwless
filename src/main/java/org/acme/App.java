@@ -1,7 +1,7 @@
 package org.acme;
 
 import com.sun.net.httpserver.HttpServer;
-import io.dekorate.jib.annotation.JibBuild;
+import io.dekorate.docker.annotation.DockerBuild;
 import io.dekorate.kubernetes.annotation.ImagePullPolicy;
 import io.dekorate.kubernetes.annotation.Port;
 import io.dekorate.openshift.annotation.OpenshiftApplication;
@@ -21,7 +21,7 @@ import java.net.InetSocketAddress;
         imagePullPolicy = ImagePullPolicy.Always,
         ports = @Port(name = "web", containerPort = 8080))
 @S2iBuild(enabled=false)
-@JibBuild(registry = "docker.io")
+@DockerBuild(registry = "docker.io")
 public class App 
 {
     public static void main(String[] args) throws IOException {
