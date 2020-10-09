@@ -16,7 +16,7 @@ you just need to add the proper dependency to the `pom.xml` .
  <dependency>
       <groupId>io.dekorate</groupId>
       <artifactId>openshift-annotations</artifactId>
-      <version>1.0.1</version>
+      <version>0.13.1</version>
  </dependency>
 ```
 
