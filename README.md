@@ -80,7 +80,7 @@ Generating these manifests (YAML files) using `Dekorate` is very easy, you just 
  <dependency>
       <groupId>io.dekorate</groupId>
       <artifactId>kubernetes-annotations</artifactId>
-      <version>1.0.1</version>
+      <version>0.13.1</version>
  </dependency>
 ```
 
