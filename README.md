@@ -148,7 +148,7 @@ mvn clean package -Ddekorate.build=true  -Ddekorate.push=true -Ddekorate.docker.
 ### Using jib-maven-plugin
 
 [Jib](https://github.com/GoogleContainerTools/jib/tree/master/jib-maven-plugin) is a Maven plugin for building Docker images. Jib simplifies the containerization since with it, we don't need to write a dockerfile. We don't even have to have docker installed to create and publish the docker images ourselves.
-Unsing it via a maven plugin is nice because Jib will catch any changes we make to our application each time we build.
+Using it via a maven plugin is nice because Jib will catch any changes we make to our application each time we build.
 
 Configure the plugin adding the following code to the `pom.xml` file:
 
