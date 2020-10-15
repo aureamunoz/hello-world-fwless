@@ -53,7 +53,7 @@
         <version>2.5.2</version>
         <configuration>
           <to>
-            <image>localhost:5000/hello-world-fwless:1.0-SNAPSHOT</image>
+            <image>docker.io/amunozhe/hello-world-fwless:1.0-SNAPSHOT</image>
           </to>
           <allowInsecureRegistries>true</allowInsecureRegistries>
         </configuration>
