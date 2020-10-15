@@ -159,26 +159,17 @@ Configure the plugin adding the following code to the `pom.xml` file:
         <version>2.5.2</version>
         <configuration>
           <to>
-            <image>localhost:5000/hello-world-fwless:1.0-SNAPSHOT</image>
+            <image>docker.io/amunozhe/hello-world-fwless:1.0-SNAPSHOT</image>
           </to>
           <allowInsecureRegistries>true</allowInsecureRegistries>
         </configuration>
     </plugin>
 ```
 
-Build your container image with:
+Build and push your container image to the Docker Hub registry with:
 
 ```
 mvn compile jib:build
-```
-
-Replace the following line in the manifest `target/classes/META-INF/dekorate/kubernetes.yml`: 
-```
-image: USERNAME/hello-world-fwless:1.0-SNAPSHOT
-```
-by
-```
-image: localhost:5000/hello-world-fwless:1.0-SNAPSHOT
 ```
 
 Finally, we will deploy the application under the namespace `demo` using the yaml resources with the following command:
@@ -187,3 +178,11 @@ Finally, we will deploy the application under the namespace `demo` using the yam
 kubectl create ns demo
 kubectl apply -f target/classes/META-INF/dekorate/kubernetes.yml -n demo
 ```
+
+Get the application URL requesting the Ingress:
+
+```
+kubectl get ingress -n demo
+```
+
+At last, you should be able to access the application by opening a browser to $URL/api/hello
