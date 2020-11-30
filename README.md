@@ -80,11 +80,11 @@ Generating these manifests (YAML files) using `Dekorate` is very easy, you just 
  <dependency>
       <groupId>io.dekorate</groupId>
       <artifactId>kubernetes-annotations</artifactId>
-      <version>0.13.1</version>
+      <version>0.13.6</version>
  </dependency>
 ```
 
-Next, we will add a Java annotation for `Dekorate` to tune the YAML resources. It's possible [to configure Dekorate using](https://github.com/dekorateio/dekorate#usage) Java annotations, configuration properties (application.properties), both.
+Next, we will add a Java annotation for `Dekorate` to tune the YAML resources. It's possible [to configure Dekorate using](https://github.com/dekorateio/dekorate#usage) Java annotations, configuration properties (application.properties) or both.
 In this case we will use, Java annotations, more specificlly  [`@KubernetesApplication`](https://github.com/dekorateio/dekorate#kubernetes) which also gives us access to more Kubernetes specific configuration options.
 Edit the App class and add the following annotation.
 
@@ -113,23 +113,16 @@ A basic Dockerfile is provided in the project base directory so you can build th
 ```
 docker build -f Dockerfile -t USERNAME/hello-world-fwless:1.0-SNAPSHOT .
 ```
-Then, tag the image as follows to be able to push it to the local registry:
+To allow the Kubernetes cluster to run it, we need to push the image to the image registry. 
+Please, consider registering at http://hub.docker.com or other publicly available registry if you don’t have yet an id and change the id occurrences with your own.
+Then, you can push the image using the following command:
 ```
-docker tag USERNAME/hello-world-fwless:1.0-SNAPSHOT localhost:5000/hello-world-fwless:1.0-SNAPSHOT
-```
-Finally, you can push the image to the local registry
-```
-docker push localhost:5000/hello-world-fwless:1.0-SNAPSHOT
+docker push USERNAME/hello-world-fwless:1.0-SNAPSHOT
 ```
 
-**IMPORTANT**: As the repository of the image has changed, we need to modify manually the kubernetes yml file generated to use that image. Dekorate does not support yet the configuration of the full image name by the user.
-So, replace the following line: 
+**NOTE** Dekorate [allows the user to trigger container image builds and deploy](https://github.com/dekorateio/dekorate#building-and-deploying) after the end of compilation. So, alternatively, you could also delegate the build of the container image and the manifests deployment using the followings hooks provided by Dekorate:
 ```
-image: USERNAME/hello-world-fwless:1.0-SNAPSHOT
-```
-by
-```
-image: localhost:5000/hello-world-fwless:1.0-SNAPSHOT
+mvn clean package -Ddekorate.build=true  -Ddekorate.push=true
 ```
 
 Finally, we will deploy the application under the namespace `demo` using the yaml resources with the following command:
@@ -140,36 +133,26 @@ kubectl apply -f target/classes/META-INF/dekorate/kubernetes.yml -n demo
 ```
 After a few seconds, check if the application is running and available at the following address opened within your browser `http://fw-app.127.0.0.1.nip.io/api/hello` or do a curl/wget or httpie within a terminal.
 
-**NOTE** Dekorate [allows the user to trigger container image builds and deploy](https://github.com/dekorateio/dekorate#building-and-deploying) after the end of compilation. So, alternatively, you could also delegate the build of the container image and the manifests deployment using the followings hooks provided by Dekorate:
-```
-mvn clean package -Ddekorate.build=true  -Ddekorate.push=true -Ddekorate.docker.registry="localhost:5000" -Ddekorate.deploy=true
-```
 
 ### Using jib-maven-plugin
 
 [Jib](https://github.com/GoogleContainerTools/jib/tree/master/jib-maven-plugin) is a Maven plugin for building Docker images. Jib simplifies the containerization since with it, we don't need to write a dockerfile. We don't even have to have docker installed to create and publish the docker images ourselves.
 Using it via a maven plugin is nice because Jib will catch any changes we make to our application each time we build.
 
-Configure the plugin adding the following code to the `pom.xml` file:
+Using [Dekorate build hook](https://github.com/dekorateio/dekorate#jib-build-hook) allows to the users build and push the image even more easily. 
+We just need to add the `jib-annotations` dependency in the `pom.xml` file:
 
 ```
-    <plugin>
-        <groupId>com.google.cloud.tools</groupId>
-        <artifactId>jib-maven-plugin</artifactId>
-        <version>2.5.2</version>
-        <configuration>
-          <to>
-            <image>docker.io/amunozhe/hello-world-fwless:1.0-SNAPSHOT</image>
-          </to>
-          <allowInsecureRegistries>true</allowInsecureRegistries>
-        </configuration>
-    </plugin>
+    <dependencies>
+      <groupId>io.dekorate</groupId>
+      <artifactId>jib-annotations</artifactId>
+    </dependencies>
 ```
 
-Build and push your container image to the Docker Hub registry with:
+Then, pass `-Ddekorate.build=true` as an argument to the build in order to trigger the image creation and push to the docker registry:
 
 ```
-mvn compile jib:build
+mvn clean package -Ddekorate.push=true
 ```
 
 Finally, we will deploy the application under the namespace `demo` using the yaml resources with the following command:
