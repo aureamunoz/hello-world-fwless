@@ -16,7 +16,7 @@ you just need to add the proper dependency to the `pom.xml` .
  <dependency>
       <groupId>io.dekorate</groupId>
       <artifactId>openshift-annotations</artifactId>
-      <version>0.13.1</version>
+      <version>0.13.6</version>
  </dependency>
 ```
 
@@ -66,8 +66,7 @@ Edit the Java `App` class and add these annotations:
 
 At this point we are set, and we can now trigger the generation of manifests !
 
-Within a terminal, navigate to the directory of this project and execute the following maven command.
-To trigger the build of the image and to push it to the registry, we will then pass the following parameters `-Ddekorate.build=true -Ddekorate.push=true` to the command:
+Dekorate [allows the user to trigger container image builds and deploy](https://github.com/dekorateio/dekorate#building-and-deploying) after the end of compilation. So you could also delegate the build and push of the container image using the followings hooks provided by Dekorate. Within a terminal, navigate to the directory of this project and execute the following maven command.
 
 ```
 mvn clean package -Ddekorate.build=true -Ddekorate.push=true
@@ -76,6 +75,17 @@ mvn clean package -Ddekorate.build=true -Ddekorate.push=true
 **REMARK**: The generated manifests can be found under the following path: `target/classes/META-INF/dekorate`.
 
 **NOTE**: we need a dockerfile to build a container that runs the application. Such file is provided at the project directory. Also, docker must be installed in your machine.
+
+Alternatively, you could perform the build and push of the container image manually via the `docker` command.
+
+```
+docker build -f Dockerfile -t USERNAME/hello-world-fwless:1.0-SNAPSHOT .
+```
+and
+
+```
+docker push USERNAME/hello-world-fwless:1.0-SNAPSHOT
+```
 
 ## Deploying theApplication on the cluster
 
