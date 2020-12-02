@@ -1,6 +1,6 @@
-# hello-world-fwless
+# Simple java API rest. hello-world-fwless
 
-Simple java API rest.
+#### Infos
 
 This project aims to showcase how to use [Dekorate](dekorate.io) to generate the Kubernetes MANIFEST (YAML resources) 
 to build a container image of an application designed without a framework but based on Java classes only and 
@@ -17,6 +17,9 @@ Depending on the container platform and image building tool that you would like 
 | `Kubernetes`     |  `JIB`            |[`dekorate-4-k8s-jib`](https://github.com/aureamunoz/hello-world-fwless/tree/dekorate-4-k8s-jib)    |
 | `OpenShift`      |  `Docker`         |[`dekorate-4-ocp-docker`](https://github.com/aureamunoz/hello-world-fwless/tree/dekorate-4-ocp-docker)   |
 | `OpenShift`      |  `JIB`            |[`dekorate-4-ocp-jib`](https://github.com/aureamunoz/hello-world-fwless/tree/dekorate-4-ocp-jib)    |
+
+
+## Coding the API rest
 
 The following steps describe how to create a maven project, configure it and add the needed maven dependency to develop
 a pure java API rest.
