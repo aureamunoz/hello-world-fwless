@@ -9,9 +9,10 @@
   <url>http://maven.apache.org</url>
 
   <properties>
-    <java.version>8</java.version>
+    <java.version>11</java.version>
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
+    <dekorate.version>0.13.6</dekorate.version>
   </properties>
 
 
@@ -24,12 +25,12 @@
     <dependency>
       <groupId>io.dekorate</groupId>
       <artifactId>kubernetes-annotations</artifactId>
-      <version>0.13.6</version>
+      <version>${dekorate.version}</version>
     </dependency>
     <dependency>
       <groupId>io.dekorate</groupId>
       <artifactId>jib-annotations</artifactId>
-      <version>0.13.6</version>
+      <version>${dekorate.version}</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>

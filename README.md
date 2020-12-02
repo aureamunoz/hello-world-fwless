@@ -1,7 +1,14 @@
-# hello-world-fwless
-Simple java rest API without framework.
+# Simple java API rest hello-world-fwless
+Simple java API rest application without framework
 
-This branch aims to showcase how to use [Dekorate](https://github.com/dekorateio/dekorate) to generate the YAML resources and next deploy this microservice on a kubernetes cluster.
+#### Infos
+This branch aims to showcase :
+- How to Use [Dekorate](https://github.com/dekorateio/dekorate) to generate the Kubernetes MANIFESTS,
+- How to build using `JIB` as container image building tool,
+- How to deploy this microservice on an Kubernetes cluster.
+
+Requirements:
+The application should work locally. The [master](https://github.com/aureamunoz/hello-world-fwless/tree/master) branch explains how to code the java rest application without framework. 
 
 ## Set up
 This project uses [kind](https://kind.sigs.k8s.io/) for running a Kubernetes cluster locally. You can install it following the instructions [here](https://kind.sigs.k8s.io/docs/user/quick-start/#installation).
