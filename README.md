@@ -1,10 +1,14 @@
-# hello-world-fwless
-Simple java API rest without framework
+# Simple java API rest hello-world-fwless
+Simple java API rest application without framework
 
+#### Infos
 This branch aims to showcase :
-- How to Use [Dekorate](https://github.com/dekorateio/dekorate) to generate the MANIFESTS,
-- To build using docker the container image,
-- To deploy this microservice on an OpenShift cluster.
+- How to Use [Dekorate](https://github.com/dekorateio/dekorate) to generate the OpenShift MANIFESTS,
+- How to build using `Docker` as container image building tool,
+- How to deploy this microservice on an OpenShift cluster.
+
+Requirements:
+The application should work locally. The [master](https://github.com/aureamunoz/hello-world-fwless/tree/master) branch explains how to code the java rest application without framework. 
 
 # OpenShift resources generation and deployment
 ## Manifests generation
