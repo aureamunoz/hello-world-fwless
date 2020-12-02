@@ -3,8 +3,8 @@ Simple java API rest application without framework
 
 #### Infos
 This branch aims to showcase :
-- How to Use [Dekorate](https://github.com/dekorateio/dekorate) to generate the MANIFESTS,
-- How to build using JIB as container image building tool,
+- How to Use [Dekorate](https://github.com/dekorateio/dekorate) to generate the OpenShift MANIFESTS,
+- How to build using `JIB` as container image building tool,
 - How to deploy this microservice on an OpenShift cluster.
 
 Requirements:
