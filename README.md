@@ -1,4 +1,4 @@
-# Simple java API rest. hello-world-fwless
+# Simple java API rest hello-world-fwless
 
 #### Infos
 
@@ -43,7 +43,6 @@ mvn archetype:generate \
 ```
 3. Include Jackson for JSON serialization
 ```
-<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
 <dependency>
     <groupId>com.fasterxml.jackson.core</groupId>
     <artifactId>jackson-databind</artifactId>
@@ -102,8 +101,8 @@ public class App
 
 }
 ```
-When you will launch using your IDEA the `App` java class, a web server listening on port 8000 will be started and will expose
-an endpoint. If you issue a curl request at the address `localhost:8080/api/hello`, then the following message `Hello FrameWorkless world!`
+You can run the `main` method int `App` java class using your favorite IDE. You will see that a web server listening on port 8000 will be started and will expose
+an endpoint. If you use a curl request at the address `localhost:8080/api/hello`, or open a browser, then the following message `Hello FrameWorkless world!`
 will be printed.
 
 6. Compile the application using the `mvn clean package` command.
