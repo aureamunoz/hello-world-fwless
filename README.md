@@ -106,23 +106,27 @@ Trigger the manifests generation. Navigate to the directory and run `mvn clean p
 
 ## Building and deploying
 
-Now that we have populated YAML kubernetes resources, we are able to deploy the application on the cluster, we must first create a container image and push it to a local container registry.
+Now that we have populated YAML kubernetes resources, we are able to deploy the application on the cluster, we must first create a container image and push it to an external container registry.
 
-### Using docker
-A basic Dockerfile is provided in the project base directory so you can build the image using the following command:
+### Using jib-maven-plugin
+
+[Jib](https://github.com/GoogleContainerTools/jib/tree/master/jib-maven-plugin) is a Maven plugin for building Docker images. Jib simplifies the containerization since with it, we don't need to write a dockerfile. We don't even have to have docker installed to create and publish the docker images ourselves.
+Using it via a maven plugin is nice because Jib will catch any changes we make to our application each time we build.
+
+Using [Dekorate publish hook](https://github.com/dekorateio/dekorate#jib-build-hook) allows to the users build and push the image even more easily. 
+We just need to add the `jib-annotations` dependency in the `pom.xml` file:
+
 ```
-docker build -f Dockerfile -t USERNAME/hello-world-fwless:1.0-SNAPSHOT .
-```
-To allow the Kubernetes cluster to run it, we need to push the image to the image registry. 
-Please, consider registering at http://hub.docker.com or other publicly available registry if you don’t have yet an id and change the id occurrences with your own.
-Then, you can push the image using the following command:
-```
-docker push USERNAME/hello-world-fwless:1.0-SNAPSHOT
+    <dependencies>
+      <groupId>io.dekorate</groupId>
+      <artifactId>jib-annotations</artifactId>
+    </dependencies>
 ```
 
-**NOTE** Dekorate [allows the user to trigger container image builds and deploy](https://github.com/dekorateio/dekorate#building-and-deploying) after the end of compilation. So, alternatively, you could also delegate the build and publish of the container image using the followings hooks provided by Dekorate:
+Then, pass `-Ddekorate.push=true` as an argument to the build in order to trigger the image creation and push to the docker registry:
+
 ```
-mvn clean package -Ddekorate.build=true  -Ddekorate.push=true
+mvn clean package -Ddekorate.push=true
 ```
 
 Finally, we will deploy the application under the namespace `demo` using the yaml resources with the following command:
