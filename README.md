@@ -120,7 +120,7 @@ Then, you can push the image using the following command:
 docker push USERNAME/hello-world-fwless:1.0-SNAPSHOT
 ```
 
-**NOTE** Dekorate [allows the user to trigger container image builds and deploy](https://github.com/dekorateio/dekorate#building-and-deploying) after the end of compilation. So, alternatively, you could also delegate the build of the container image and the manifests deployment using the followings hooks provided by Dekorate:
+**NOTE** Dekorate [allows the user to trigger container image builds and deploy](https://github.com/dekorateio/dekorate#building-and-deploying) after the end of compilation. So, alternatively, you could also delegate the build and publish of the container image using the followings hooks provided by Dekorate:
 ```
 mvn clean package -Ddekorate.build=true  -Ddekorate.push=true
 ```
@@ -131,41 +131,12 @@ Finally, we will deploy the application under the namespace `demo` using the yam
 kubectl create ns demo
 kubectl apply -f target/classes/META-INF/dekorate/kubernetes.yml -n demo
 ```
-After a few seconds, check if the application is running and available at the following address opened within your browser `http://fw-app.127.0.0.1.nip.io/api/hello` or do a curl/wget or httpie within a terminal.
 
-
-### Using jib-maven-plugin
-
-[Jib](https://github.com/GoogleContainerTools/jib/tree/master/jib-maven-plugin) is a Maven plugin for building Docker images. Jib simplifies the containerization since with it, we don't need to write a dockerfile. We don't even have to have docker installed to create and publish the docker images ourselves.
-Using it via a maven plugin is nice because Jib will catch any changes we make to our application each time we build.
-
-Using [Dekorate build hook](https://github.com/dekorateio/dekorate#jib-build-hook) allows to the users build and push the image even more easily. 
-We just need to add the `jib-annotations` dependency in the `pom.xml` file:
-
-```
-    <dependencies>
-      <groupId>io.dekorate</groupId>
-      <artifactId>jib-annotations</artifactId>
-    </dependencies>
-```
-
-Then, pass `-Ddekorate.build=true` as an argument to the build in order to trigger the image creation and push to the docker registry:
-
-```
-mvn clean package -Ddekorate.push=true
-```
-
-Finally, we will deploy the application under the namespace `demo` using the yaml resources with the following command:
-
-```
-kubectl create ns demo
-kubectl apply -f target/classes/META-INF/dekorate/kubernetes.yml -n demo
-```
-
-Get the application URL requesting the Ingress:
+You can also get the application URL requesting the Ingress:
 
 ```
 kubectl get ingress -n demo
 ```
 
-At last, you should be able to access the application by opening a browser to $URL/api/hello
+Check if the application is running and available at the following address opened within your browser `http://fw-app.127.0.0.1.nip.io/api/hello` or do a curl/wget or httpie within a terminal.
+

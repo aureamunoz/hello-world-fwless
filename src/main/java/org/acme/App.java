@@ -24,7 +24,6 @@ import java.net.InetSocketAddress;
         expose = true, // NEEDED FOR INGRESS
         imagePullPolicy = ImagePullPolicy.Always // TO BE ABLE TO USE UPDATED IMAGE ;-)
 )
-@DockerBuild(image = "docker.io/amunozhe/hello-world-fwless:1.0-SNAPSHOT")
 public class App
 {
     public static void main(String[] args) throws IOException {
