@@ -6,6 +6,18 @@ This project aims to showcase how to use [Dekorate](dekorate.io) to generate the
 to build a container image of an application designed without a framework but based on Java classes only and 
 deploy it easily next Kubernetes/Openshift.
 
+*NOTE*
+
+The master branch contains just the code of the Java application exposing a REST endpoint.
+Depending on the container platform and image building tool that you would like to use, you will find different branches on this repository:
+
+|Container Platform|Image building tool|git branch|
+|------------------|:-----------------:|---------:|
+| `Kubernetes`     |  `Docker`         |[`dekorate-4-k8s-docker`](https://github.com/aureamunoz/hello-world-fwless/tree/dekorate-4-k8s-docker)    |
+| `Kubernetes`     |  `JIB`            |[`dekorate-4-k8s-jib`](https://github.com/aureamunoz/hello-world-fwless/tree/dekorate-4-k8s-jib)    |
+| `OpenShift`      |  `Docker`         |[`dekorate-4-ocp-docker`](https://github.com/aureamunoz/hello-world-fwless/tree/dekorate-4-ocp-docker)   |
+| `OpenShift`      |  `JIB`            |[`dekorate-4-ocp-jib`](https://github.com/aureamunoz/hello-world-fwless/tree/dekorate-4-ocp-jib)    |
+
 The following steps describe how to create a maven project, configure it and add the needed maven dependency to develop
 a pure java API rest.
 
@@ -113,3 +125,4 @@ Then, run the image using this command:
 docker run -i --rm -p 8080:8080 $USER/hello-world-fwless
 ```
 Check if the endpoint is responding with `curl localhost:8080/api/hello` or open a browser to `http://localhost:8080/api/hello`.
+
