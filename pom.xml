@@ -9,10 +9,10 @@
   <url>http://maven.apache.org</url>
 
   <properties>
-    <java.version>11</java.version>
+    <java.version>15</java.version>
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
-    <dekorate.version>0.13.6</dekorate.version>
+    <dekorate.version>2.1.1</dekorate.version>
   </properties>
 
 
